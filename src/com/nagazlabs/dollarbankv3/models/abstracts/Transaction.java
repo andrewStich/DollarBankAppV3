@@ -79,4 +79,10 @@ public abstract class Transaction {
 		return type;
 	}
 
+	@Override
+	public String toString() {
+		return "Transaction [id=" + id + ", customerId=" + customerId + ", accountId=" + accountId + ", amount="
+				+ amount + ", startBalance=" + startBalance + ", endBalance=" + endBalance + ", type=" + type + "]";
+	}
+
 }

@@ -1,23 +1,19 @@
 package com.nagazlabs.dollarbankv3.models.abstracts;
 
-import com.nagazlabs.dollarbankv3.enums.AccountType;
-
 public abstract class Account {
 	private int id;
 	private int customerId;
 	private float balance;
-	private AccountType type;
 
 	public Account() {
 
 	}
 
-	public Account(int id, int customerId, float balance, AccountType type) {
+	public Account(int id, int customerId, float balance) {
 		super();
 		this.id = id;
 		this.customerId = customerId;
 		this.balance = balance;
-		this.type = type;
 	}
 
 	public int getId() {
@@ -44,8 +40,9 @@ public abstract class Account {
 		this.balance = balance;
 	}
 
-	public AccountType getType() {
-		return type;
+	@Override
+	public String toString() {
+		return "Account [id=" + id + ", customerId=" + customerId + ", balance=" + balance + "]";
 	}
 
 }
