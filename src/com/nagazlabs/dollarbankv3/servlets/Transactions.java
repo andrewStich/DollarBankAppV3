@@ -10,13 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.nagazlabs.dollarbankv3.dao.impl.CheckingsDaoImpl;
 import com.nagazlabs.dollarbankv3.dao.impl.SavingsDaoImpl;
 import com.nagazlabs.dollarbankv3.dao.impl.TransactionDaoImpl;
-import com.nagazlabs.dollarbankv3.enums.AccountType;
 import com.nagazlabs.dollarbankv3.models.CheckingAccount;
-import com.nagazlabs.dollarbankv3.models.CheckingTransaction;
 import com.nagazlabs.dollarbankv3.models.Customer;
 import com.nagazlabs.dollarbankv3.models.SavingsAccount;
-import com.nagazlabs.dollarbankv3.models.SavingsTransaction;
-import com.nagazlabs.dollarbankv3.models.abstracts.Transaction;
+import com.nagazlabs.dollarbankv3.models.Transaction;
 
 /**
  * Servlet implementation class Transactions
@@ -47,8 +44,8 @@ public class Transactions extends HttpServlet {
 		SavingsDaoImpl savingsAS = new SavingsDaoImpl();
 		
 		if(request.getParameter("saveTrans") != null) {
-			t = new SavingsTransaction();
-			tempSavings = savingsAS.getbyCustomerAndType(c.getId(), AccountType.SAVINGS);
+			t = new Transaction();
+			tempSavings = savingsAS.getbyCustomer(c.getId());
 			float temp = Float.valueOf(request.getParameter("saveTrans"));
 			float startBalance = tempSavings.getBalance();
 			float endBalance = startBalance - temp;
@@ -62,8 +59,8 @@ public class Transactions extends HttpServlet {
 			savingsAS.update(tempSavings);
 			ts.create(t);
 			
-			t = new CheckingTransaction();
-			tempChecking = checkingAS.getbyCustomerAndType(c.getId(), AccountType.CHECKING);
+			t = new Transaction();
+			tempChecking = checkingAS.getbyCustomer(c.getId());
 			startBalance = tempChecking.getBalance();
 			endBalance = startBalance + temp;
 			
@@ -78,8 +75,8 @@ public class Transactions extends HttpServlet {
 		}
 		
 		if(request.getParameter("checkTrans") != null) {
-			t = new CheckingTransaction();
-			tempChecking = checkingAS.getbyCustomerAndType(c.getId(), AccountType.CHECKING);
+			t = new Transaction();
+			tempChecking = checkingAS.getbyCustomer(c.getId());
 			float temp = Float.valueOf(request.getParameter("checkTrans"));
 			float startBalance = tempChecking.getBalance();
 			float endBalance = startBalance - temp;
@@ -93,8 +90,8 @@ public class Transactions extends HttpServlet {
 			checkingAS.update(tempChecking);
 			ts.create(t);
 			
-			t = new SavingsTransaction();
-			tempSavings = savingsAS.getbyCustomerAndType(c.getId(), AccountType.SAVINGS);
+			t = new Transaction();
+			tempSavings = savingsAS.getbyCustomer(c.getId());
 			startBalance = tempSavings.getBalance();
 			endBalance = startBalance + temp;
 			
@@ -109,8 +106,8 @@ public class Transactions extends HttpServlet {
 		}
 		
 		if(request.getParameter("saveWithdraw") != null) {
-			t = new SavingsTransaction();
-			tempSavings = savingsAS.getbyCustomerAndType(c.getId(), AccountType.SAVINGS);
+			t = new Transaction();
+			tempSavings = savingsAS.getbyCustomer(c.getId());
 			float temp = Float.valueOf(request.getParameter("saveWithdraw"));
 			float startBalance = tempSavings.getBalance();
 			float endBalance = startBalance - temp;
@@ -127,8 +124,8 @@ public class Transactions extends HttpServlet {
 		}
 		
 		if(request.getParameter("checkWithdraw") != null) {
-			t = new CheckingTransaction();
-			tempChecking = checkingAS.getbyCustomerAndType(c.getId(), AccountType.CHECKING);
+			t = new Transaction();
+			tempChecking = checkingAS.getbyCustomer(c.getId());
 			float temp = Float.valueOf(request.getParameter("checkWithdraw"));
 			float startBalance = tempChecking.getBalance();
 			float endBalance = startBalance - temp;
@@ -144,8 +141,8 @@ public class Transactions extends HttpServlet {
 		}
 		
 		if(request.getParameter("saveDeposit") != null) {
-			t = new SavingsTransaction();
-			tempSavings = savingsAS.getbyCustomerAndType(c.getId(), AccountType.SAVINGS);
+			t = new Transaction();
+			tempSavings = savingsAS.getbyCustomer(c.getId());
 			float temp = Float.valueOf(request.getParameter("saveDeposit"));
 			float startBalance = tempSavings.getBalance();
 			float endBalance = startBalance + temp;
@@ -162,8 +159,8 @@ public class Transactions extends HttpServlet {
 		}
 		
 		if(request.getParameter("checkDeposit") != null) {
-			t = new CheckingTransaction();
-			tempChecking = checkingAS.getbyCustomerAndType(c.getId(), AccountType.CHECKING);
+			t = new Transaction();
+			tempChecking = checkingAS.getbyCustomer(c.getId());
 			float temp = Float.valueOf(request.getParameter("checkDeposit"));
 			float startBalance = tempChecking.getBalance();
 			float endBalance = startBalance + temp;

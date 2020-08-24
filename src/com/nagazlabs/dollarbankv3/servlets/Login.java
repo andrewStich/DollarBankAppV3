@@ -36,8 +36,9 @@ public class Login extends HttpServlet {
 			try {
 				CustomerDaoImpl cs = new CustomerDaoImpl();
 				Customer c = cs.getByUserName(request.getParameter("user"));
+				System.out.println(c.getUserName());
 				
-				if(request.getParameter("password").equals(c.getPassword())) {
+				if(request.getParameter("pass").equals(c.getPassword())) {
 					request.getSession().setAttribute("customer", c);
 				} else {
 					request.getSession().setAttribute("loginFailed", true);

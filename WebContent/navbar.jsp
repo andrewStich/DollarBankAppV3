@@ -26,7 +26,7 @@
 					<li class="nav-item"><a class="nav-link text-secondary" href="savings.jsp">Savings</a></li>
 					<li class="nav-item"><a class="nav-link text-secondary" href="transactions.jsp">Transactions</a></li>
 					<li class="nav-item"><form method="post" action="./Logout">
-						<button class="btn btn-dark text-secondary" type="submit" name="logOut">LogOut</button></form>
+						<button class="btn btn-danger" type="submit" name="logOut">LogOut</button></form>
 					</li>
 					
 				</ul>

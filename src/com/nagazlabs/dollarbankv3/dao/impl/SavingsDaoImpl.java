@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 
 import com.nagazlabs.dollarbankv3.connections.ConnectionFactory;
 import com.nagazlabs.dollarbankv3.dao.SavingsDao;
-import com.nagazlabs.dollarbankv3.enums.AccountType;
 import com.nagazlabs.dollarbankv3.models.SavingsAccount;
 
 public class SavingsDaoImpl implements SavingsDao {
@@ -37,14 +36,13 @@ public class SavingsDaoImpl implements SavingsDao {
 	}
 
 	@Override
-	public SavingsAccount getbyCustomerAndType(int customerId, AccountType type) {
+	public SavingsAccount getbyCustomer(int customerId) {
 		Connection conn = ConnectionFactory.getConnection();
 		SavingsAccount a = null;
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement("select * from accounts where customer_id=? and type=?");
+			PreparedStatement stmt = conn.prepareStatement("select * from accounts where customer_id=? and type='SAVINGS'");
 			stmt.setInt(1, customerId);
-			stmt.setObject(2, type);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {

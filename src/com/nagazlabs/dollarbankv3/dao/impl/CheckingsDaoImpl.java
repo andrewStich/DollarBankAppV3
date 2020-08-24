@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 
 import com.nagazlabs.dollarbankv3.connections.ConnectionFactory;
 import com.nagazlabs.dollarbankv3.dao.CheckingsDao;
-import com.nagazlabs.dollarbankv3.enums.AccountType;
 import com.nagazlabs.dollarbankv3.models.CheckingAccount;
 
 public class CheckingsDaoImpl implements CheckingsDao {
@@ -37,14 +36,13 @@ public class CheckingsDaoImpl implements CheckingsDao {
 	}
 
 	@Override
-	public CheckingAccount getbyCustomerAndType(int customerId, AccountType type) {
+	public CheckingAccount getbyCustomer(int customerId) {
 		Connection conn = ConnectionFactory.getConnection();
 		CheckingAccount a = null;
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement("select * from accounts where customer_id=? and type=?");
+			PreparedStatement stmt = conn.prepareStatement("select * from accounts where customer_id=? and type='CHECKING'");
 			stmt.setInt(1, customerId);
-			stmt.setObject(2, type);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {

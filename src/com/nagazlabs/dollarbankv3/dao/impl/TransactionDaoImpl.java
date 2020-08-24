@@ -8,17 +8,14 @@ import java.util.List;
 
 import com.nagazlabs.dollarbankv3.connections.ConnectionFactory;
 import com.nagazlabs.dollarbankv3.dao.TransactionDao;
-import com.nagazlabs.dollarbankv3.enums.AccountType;
-import com.nagazlabs.dollarbankv3.models.CheckingTransaction;
-import com.nagazlabs.dollarbankv3.models.SavingsTransaction;
-import com.nagazlabs.dollarbankv3.models.abstracts.Transaction;
+import com.nagazlabs.dollarbankv3.models.Transaction;
 
 public class TransactionDaoImpl implements TransactionDao {
 
 	@Override
 	public Transaction getById(int id) {
 		Connection conn = ConnectionFactory.getConnection();
-		Transaction t = null;
+		Transaction t = new Transaction();
 
 		try {
 			PreparedStatement stmt = conn.prepareStatement("select * from transactions where id=?");
@@ -26,25 +23,12 @@ public class TransactionDaoImpl implements TransactionDao {
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
-				if(AccountType.CHECKING.equals(rs.getObject("type"))) {
-					t = new CheckingTransaction();
-					t.setAccountId(rs.getInt("id"));
-					t.setCustomerId(rs.getInt("customer_id"));
-					t.setAccountId(rs.getInt("account_id"));
-					t.setAmount(rs.getFloat("amount"));
-					t.setStartBalance(rs.getFloat("start_balance"));
-					t.setEndBalance(rs.getFloat("end_balance"));
-				} else if(AccountType.SAVINGS.equals(rs.getObject("type"))) {
-					t = new SavingsTransaction();
-					t.setAccountId(rs.getInt("id"));
-					t.setCustomerId(rs.getInt("customer_id"));
-					t.setAccountId(rs.getInt("account_id"));
-					t.setAmount(rs.getFloat("amount"));
-					t.setStartBalance(rs.getFloat("start_balance"));
-					t.setEndBalance(rs.getFloat("end_balance"));
-				} else {
-					System.out.println("Unknown account type");
-				}
+				t.setAccountId(rs.getInt("id"));
+				t.setCustomerId(rs.getInt("customer_id"));
+				t.setAccountId(rs.getInt("account_id"));
+				t.setAmount(rs.getFloat("amount"));
+				t.setStartBalance(rs.getFloat("start_balance"));
+				t.setEndBalance(rs.getFloat("end_balance"));
 			}
 			return t;
 		} catch (Exception e) {
@@ -55,37 +39,53 @@ public class TransactionDaoImpl implements TransactionDao {
 	}
 
 	@Override
-	public List<Transaction> getByCustomerAndType(int customerId, AccountType type) {
+	public List<Transaction> getByCustomerAndType(int customerId, int accountId) {
 		Connection conn = ConnectionFactory.getConnection();
-		Transaction t = null;
+		Transaction t = new Transaction();
 		List<Transaction> transList = new ArrayList<Transaction>();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement("select * from transaction where customer_id = ? and type = ? order by desc");
+			PreparedStatement stmt = conn.prepareStatement("select * from transactions where customer_id = ? and account_id = ? order by id desc");
 			stmt.setInt(1, customerId);
-			stmt.setObject(2, type);
+			stmt.setObject(2, accountId);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
-				if(AccountType.CHECKING.equals(rs.getObject("type"))) {
-					t = new CheckingTransaction();
-					t.setAccountId(rs.getInt("id"));
-					t.setCustomerId(rs.getInt("customer_id"));
-					t.setAccountId(rs.getInt("account_id"));
-					t.setAmount(rs.getFloat("amount"));
-					t.setStartBalance(rs.getFloat("start_balance"));
-					t.setEndBalance(rs.getFloat("end_balance"));
-				} else if(AccountType.SAVINGS.equals(rs.getObject("type"))) {
-					t = new SavingsTransaction();
-					t.setAccountId(rs.getInt("id"));
-					t.setCustomerId(rs.getInt("customer_id"));
-					t.setAccountId(rs.getInt("account_id"));
-					t.setAmount(rs.getFloat("amount"));
-					t.setStartBalance(rs.getFloat("start_balance"));
-					t.setEndBalance(rs.getFloat("end_balance"));
-				} else {
-					System.out.println("Unknown account type");
-				}
+				t.setAccountId(rs.getInt("id"));
+				t.setCustomerId(rs.getInt("customer_id"));
+				t.setAccountId(rs.getInt("account_id"));
+				t.setAmount(rs.getFloat("amount"));
+				t.setStartBalance(rs.getFloat("start_balance"));
+				t.setEndBalance(rs.getFloat("end_balance"));
+				transList.add(t);
+			}
+			
+			return transList;
+		} catch (Exception e) {
+			System.out.println("Error getting all user account transactions");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public List<Transaction> getAllByByCustomer(int customerId) {
+		Connection conn = ConnectionFactory.getConnection();
+		Transaction t = new Transaction();
+		List<Transaction> transList = new ArrayList<Transaction>();
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement("select * from transactions where customer_id = ? order by id desc");
+			stmt.setInt(1, customerId);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				t.setAccountId(rs.getInt("id"));
+				t.setCustomerId(rs.getInt("customer_id"));
+				t.setAccountId(rs.getInt("account_id"));
+				t.setAmount(rs.getFloat("amount"));
+				t.setStartBalance(rs.getFloat("start_balance"));
+				t.setEndBalance(rs.getFloat("end_balance"));
 				transList.add(t);
 			}
 			
@@ -117,13 +117,12 @@ public class TransactionDaoImpl implements TransactionDao {
 		Connection conn = ConnectionFactory.getConnection();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement("insert into transactions (customer_id, account_id, amount, start_balance, end_balance, type) values (?, ?, ?, ?, ?, ?)");
+			PreparedStatement stmt = conn.prepareStatement("insert into transactions (customer_id, account_id, amount, start_balance, end_balance) values (?, ?, ?, ?, ?)");
 			stmt.setInt(1, t.getCustomerId());
 			stmt.setInt(2, t.getAccountId());
 			stmt.setFloat(3, t.getAmount());
 			stmt.setFloat(4, t.getStartBalance());
 			stmt.setFloat(5, t.getEndBalance());
-			stmt.setObject(6, t.getType().toString());
 			stmt.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("Error creating transaction");
@@ -137,13 +136,12 @@ public class TransactionDaoImpl implements TransactionDao {
 Connection conn = ConnectionFactory.getConnection();
 		
 		try {
-			PreparedStatement stmt = conn.prepareStatement("update transactions set customer_id=?, account_id=?, amount=?, start_balance=?, end_balance=?, type=? where id=?");
+			PreparedStatement stmt = conn.prepareStatement("update transactions set customer_id=?, account_id=?, amount=?, start_balance=?, end_balance=? where id=?");
 			stmt.setInt(1, t.getCustomerId());
 			stmt.setInt(2, t.getAccountId());
 			stmt.setFloat(3, t.getAmount());
 			stmt.setFloat(4, t.getStartBalance());
 			stmt.setFloat(5, t.getEndBalance());
-			stmt.setObject(6, t.getType().toString());
 			stmt.setInt(7, t.getId());
 			stmt.executeUpdate();
 		} catch (Exception e) {

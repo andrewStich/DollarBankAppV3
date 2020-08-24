@@ -1,22 +1,18 @@
-package com.nagazlabs.dollarbankv3.models.abstracts;
+package com.nagazlabs.dollarbankv3.models;
 
-import com.nagazlabs.dollarbankv3.enums.AccountType;
-
-public abstract class Transaction {
+public class Transaction {
 	private int id;
 	private int customerId;
 	private int accountId;
 	private float amount;
 	private float startBalance;
 	private float endBalance;
-	private AccountType type;
 
 	public Transaction() {
 
 	}
 
-	public Transaction(int id, int customerId, int accountId, float amount, float startBalance, float endBalance,
-			AccountType type) {
+	public Transaction(int id, int customerId, int accountId, float amount, float startBalance, float endBalance) {
 		super();
 		this.id = id;
 		this.customerId = customerId;
@@ -24,7 +20,6 @@ public abstract class Transaction {
 		this.amount = amount;
 		this.startBalance = startBalance;
 		this.endBalance = endBalance;
-		this.type = type;
 	}
 
 	public int getId() {
@@ -75,14 +70,10 @@ public abstract class Transaction {
 		this.endBalance = endBalance;
 	}
 
-	public AccountType getType() {
-		return type;
-	}
-
 	@Override
 	public String toString() {
 		return "Transaction [id=" + id + ", customerId=" + customerId + ", accountId=" + accountId + ", amount="
-				+ amount + ", startBalance=" + startBalance + ", endBalance=" + endBalance + ", type=" + type + "]";
+				+ amount + ", startBalance=" + startBalance + ", endBalance=" + endBalance + "]";
 	}
 
 }

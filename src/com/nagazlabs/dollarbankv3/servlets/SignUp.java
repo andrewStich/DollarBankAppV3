@@ -12,11 +12,9 @@ import com.nagazlabs.dollarbankv3.dao.impl.CustomerDaoImpl;
 import com.nagazlabs.dollarbankv3.dao.impl.SavingsDaoImpl;
 import com.nagazlabs.dollarbankv3.dao.impl.TransactionDaoImpl;
 import com.nagazlabs.dollarbankv3.models.CheckingAccount;
-import com.nagazlabs.dollarbankv3.models.CheckingTransaction;
 import com.nagazlabs.dollarbankv3.models.Customer;
 import com.nagazlabs.dollarbankv3.models.SavingsAccount;
-import com.nagazlabs.dollarbankv3.models.SavingsTransaction;
-import com.nagazlabs.dollarbankv3.models.abstracts.Transaction;
+import com.nagazlabs.dollarbankv3.models.Transaction;
 
 /**
  * Servlet implementation class SignUp
@@ -43,11 +41,12 @@ public class SignUp extends HttpServlet {
 		CustomerDaoImpl cs = new CustomerDaoImpl();
 		
 		if(cs.getByUserName(request.getParameter("userName")) != null ) {
-			request.getSession().invalidate();
-			request.getSession(true);
-			request.getSession().setAttribute("accountExists", true);
-			send = new String("signup.jsp");
-			response.sendRedirect(send);
+			System.out.println(request.getParameter("userName"));
+//			request.getSession().invalidate();
+//			request.getSession(true);
+//			request.getSession().setAttribute("accountExists", true);
+//			send = new String("signup.jsp");
+//			response.sendRedirect(send);
 		}
 		
 		Customer c = new Customer();
@@ -66,7 +65,7 @@ public class SignUp extends HttpServlet {
 		System.out.println(a.toString());
 		checkingAS.create(a);
 		
-		Transaction t = new CheckingTransaction();
+		Transaction t = new Transaction();
 		t.setCustomerId(c.getId());
 		t.setAccountId(a.getId());
 		t.setStartBalance(0.0f);
@@ -81,7 +80,7 @@ public class SignUp extends HttpServlet {
 		System.out.println(a2.toString());
 		savingsAS.create(a2);
 		
-		t = new SavingsTransaction();
+		t = new Transaction();
 		t.setCustomerId(c.getId());
 		t.setAccountId(a2.getId());
 		t.setStartBalance(0.0f);
